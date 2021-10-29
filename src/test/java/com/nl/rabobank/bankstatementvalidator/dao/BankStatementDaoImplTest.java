@@ -26,24 +26,24 @@ class BankStatementDaoImplTest {
 
     @Test
     void testPersistTransactionRecords() {
-        TransactionData data = new TransactionData();
-        data.setAccountNo("NL91 ABNA 0417 1643 25");
-        data.setReferenceNo(25L);
-        data.setStartBalance(new BigDecimal("2.0"));
-        data.setEndBalance(new BigDecimal("4.0"));
-        data.setMutation(new BigDecimal("+2.0"));
+        TransactionData data = TransactionData.builder()
+                .accountNo("NL91 ABNA 0417 1643 25")
+                .referenceNo(25L)
+                .startBalance(new BigDecimal("2.0"))
+                .endBalance(new BigDecimal("4.0"))
+                .mutation(new BigDecimal("+2.0")).build();
         bankStatementDao.persistTransactionRecords(data);
         verify(repository, times(1)).save(data);
     }
 
     @Test
     void testCheckTransactionRecordWhenExistsInDB() {
-        TransactionData data = new TransactionData();
-        data.setAccountNo("NL91 ABNA 0417 1643 26");
-        data.setReferenceNo(26L);
-        data.setStartBalance(new BigDecimal("2.0"));
-        data.setEndBalance(new BigDecimal("4.0"));
-        data.setMutation(new BigDecimal("+2.0"));
+        TransactionData data = TransactionData.builder()
+                .accountNo("NL91 ABNA 0417 1643 26")
+                .referenceNo(26L)
+                .startBalance(new BigDecimal("2.0"))
+                .endBalance(new BigDecimal("4.0"))
+                .mutation(new BigDecimal("+2.0")).build();
         when(repository.findByReferenceNo(26L)).thenReturn(data);
         boolean recordExist = bankStatementDao.checkTransactionRecordExists(26L);
         assertTrue(recordExist);

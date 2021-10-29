@@ -59,7 +59,7 @@ public class BankStatementServiceImpl implements BankStatementService {
         log.info("processTransactionRecords method {}", records.size());
         StatementResponse response = new StatementResponse();
         List<ErrorRecord> duplicateErrorRecords = new ArrayList<>();
-        List<ErrorRecord> inCorreectBalanceErrorRecords = new ArrayList<>();
+        List<ErrorRecord> inCorrectBalanceErrorRecords = new ArrayList<>();
         List<TransactionData> distinctElements = records.stream().filter(CommonUtil.distinctByKey(TransactionData::getReferenceNo))
                 .collect(Collectors.toList());
         Set<Long> inputRecords = new HashSet<>();
@@ -93,10 +93,10 @@ public class BankStatementServiceImpl implements BankStatementService {
                         data.getAccountNo().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
                 inCorrectbalanceErrRecord.setReferenceNo(
                         data.getReferenceNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
-                inCorreectBalanceErrorRecords.add(inCorrectbalanceErrRecord);
+                inCorrectBalanceErrorRecords.add(inCorrectbalanceErrRecord);
             }
         }
-        log.info("First inCorreectBalanceErrorRecords size {}", inCorreectBalanceErrorRecords.size());
+        log.info("First inCorrectBalanceErrorRecords size {}", inCorrectBalanceErrorRecords.size());
         log.info("distinctElements size {}", distinctElements.size());
         log.info("duplicateInputRecords size {}", duplicateInputRecords.size());
         for (TransactionData data : duplicateInputRecords) {
@@ -112,12 +112,12 @@ public class BankStatementServiceImpl implements BankStatementService {
                         data.getAccountNo().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
                 inCorrectbalanceErrRecord.setReferenceNo(
                         data.getReferenceNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
-                inCorreectBalanceErrorRecords.add(inCorrectbalanceErrRecord);
+                inCorrectBalanceErrorRecords.add(inCorrectbalanceErrRecord);
             }
         }
-        log.info("Second inCorreectBalanceErrorRecords size {}", inCorreectBalanceErrorRecords.size());
-        setResultMessage(response, duplicateErrorRecords, inCorreectBalanceErrorRecords);
-        duplicateErrorRecords.addAll(inCorreectBalanceErrorRecords);
+        log.info("Second inCorrectBalanceErrorRecords size {}", inCorrectBalanceErrorRecords.size());
+        setResultMessage(response, duplicateErrorRecords, inCorrectBalanceErrorRecords);
+        duplicateErrorRecords.addAll(inCorrectBalanceErrorRecords);
         log.info("duplicateErrorRecords size {}", duplicateErrorRecords.size());
         response.setErrorRecords(duplicateErrorRecords);
         return response;
