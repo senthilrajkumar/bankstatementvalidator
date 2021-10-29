@@ -1,5 +1,14 @@
 package com.nl.rabobank.bankstatementvalidator.processor;
 
+import com.nl.rabobank.bankstatementvalidator.constant.ApplicationConstant;
+import com.nl.rabobank.bankstatementvalidator.domain.CSVStatementRecord;
+import com.nl.rabobank.bankstatementvalidator.domain.TransactionData;
+import com.nl.rabobank.bankstatementvalidator.exception.TransactionDataInputException;
+import com.opencsv.bean.CsvToBeanBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,108 +16,81 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import com.nl.rabobank.bankstatementvalidator.constant.ApplicationConstant;
-import com.nl.rabobank.bankstatementvalidator.domain.CSVStatementRecord;
-import com.nl.rabobank.bankstatementvalidator.domain.TransactionData;
-import com.nl.rabobank.bankstatementvalidator.exception.TransactionDataInputException;
-import com.opencsv.bean.CsvToBeanBuilder;
-
 @Component
+@Slf4j
 public class CSVProcessor implements FileProcessor {
-	
-	private static final Logger log = LoggerFactory.getLogger(CSVProcessor.class);
 
-	private List<TransactionData> convert(List<CSVStatementRecord> csvStatementRecords) {
+    @Override
+    public List<TransactionData> process(InputStream inputStream) {
+        List<CSVStatementRecord> csvStatementRecords;
+        try {
+            csvStatementRecords = new CsvToBeanBuilder<CSVStatementRecord>(
+                    new BufferedReader(new InputStreamReader(inputStream))).withOrderedResults(false)
+                    .withType(CSVStatementRecord.class).build().parse();
+        } catch (Exception e) {
+            log.error("Exception Occured {}", e.getMessage());
+            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+        }
+        return convert(csvStatementRecords);
+    }
 
-		return csvStatementRecords.stream().map(this::mapCsvStatementRecord).collect(Collectors.toList());
-	}
+    private List<TransactionData> convert(List<CSVStatementRecord> csvStatementRecords) {
+        return csvStatementRecords.stream().map(this::mapCsvStatementRecord).collect(Collectors.toList());
+    }
 
-	private TransactionData mapCsvStatementRecord(CSVStatementRecord record) {
+    private TransactionData mapCsvStatementRecord(CSVStatementRecord record) {
+        TransactionData data = new TransactionData();
+        validateReference(record);
+        validateAccountNumber(record);
+        validateStartBalance(record);
+        validateMutation(record);
+        validateEndBalance(record);
+        data.setReferenceNo(Integer.parseInt(record.getReference()));
+        data.setAccountNo(record.getAccountNumber());
+        data.setDescription(record.getDescription());
+        data.setStartBalance(Double.parseDouble(record.getStartBalance()));
+        data.setMutation(record.getMutation());
+        data.setEndBalance(Double.parseDouble(record.getEndBalance()));
+        return data;
+    }
 
-		TransactionData data = new TransactionData();
-		validateReference(record, data);
+    private void validateEndBalance(CSVStatementRecord record) {
+        String endBalance = record.getEndBalance();
+        if (!StringUtils.hasText(endBalance)) {
+            throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
+        }
+    }
 
-		validateAccountNumber(record, data);
+    private void validateMutation(CSVStatementRecord record) {
+        String mutation = record.getMutation();
+        if (!StringUtils.hasText(mutation)) {
+            throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
+        }
+    }
 
-		data.setDescription(record.getDescription());
+    private void validateStartBalance(CSVStatementRecord record) {
+        String startBalance = record.getStartBalance();
+        if (!StringUtils.hasText(startBalance)) {
+            throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
+        }
+    }
 
-		validateStartBalance(record, data);
+    private void validateAccountNumber(CSVStatementRecord record) {
+        String accountNo = record.getAccountNumber();
+        if (StringUtils.hasText(accountNo)) {
+            boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNo).matches();
+            if (!isIBAN) {
+                throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
+            }
+        } else {
+            throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
+        }
+    }
 
-		validateMutation(record, data);
-		validateEndBalance(record, data);
+    private void validateReference(CSVStatementRecord record) {
+        if (!StringUtils.hasText(record.getReference())) {
+            throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
+        }
+    }
 
-		return data;
-	}
-
-	private void validateEndBalance(CSVStatementRecord record, TransactionData data) {
-		String endBalance = record.getEndBalance();
-		if (StringUtils.hasText(endBalance)) {
-			data.setEndBalance(Double.parseDouble(endBalance));
-		} else {
-			throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
-		}
-	}
-
-	private void validateMutation(CSVStatementRecord record, TransactionData data) {
-		String mutation = record.getMutation();
-		if (StringUtils.hasText(mutation)) {
-			data.setMutation(mutation);
-		} else {
-			throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
-		}
-	}
-
-	private void validateStartBalance(CSVStatementRecord record, TransactionData data) {
-		String startBalance = record.getStartBalance();
-		if (StringUtils.hasText(startBalance)) {
-			data.setStartBalance(Double.parseDouble(startBalance));
-		} else {
-			throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
-		}
-	}
-
-	private void validateAccountNumber(CSVStatementRecord record, TransactionData data) {
-		String accountNo = record.getAccountNumber();
-		if (StringUtils.hasText(accountNo)) {
-			boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNo).matches();
-			if (!isIBAN) {
-				throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
-			} else {
-				data.setAccountNo(accountNo);
-			}
-		} else {
-			throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
-		}
-	}
-
-	private void validateReference(CSVStatementRecord record, TransactionData data) {
-		String reference = record.getReference();
-		if (StringUtils.hasText(reference)) {
-			data.setReferenceNo(Integer.parseInt(reference));
-		} else {
-			throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
-		}
-	}
-
-	@Override
-	public List<TransactionData> process(InputStream inputStream) {
-		// TODO Auto-generated method stub
-
-		List<CSVStatementRecord> csvStatementRecords;
-		try {
-			csvStatementRecords = new CsvToBeanBuilder<CSVStatementRecord>(
-					new BufferedReader(new InputStreamReader(inputStream))).withOrderedResults(false)
-							.withType(CSVStatementRecord.class).build().parse();
-		} catch (Exception e) {
-			log.error("Exception Occured {}" , e.getMessage());
-			throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
-		}
-		return convert(csvStatementRecords);
-
-	}
 }

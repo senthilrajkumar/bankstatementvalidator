@@ -1,10 +1,10 @@
 package com.nl.rabobank.bankstatementvalidator.repository;
 
+import com.nl.rabobank.bankstatementvalidator.domain.TransactionData;
 import org.springframework.data.repository.CrudRepository;
 
-import com.nl.rabobank.bankstatementvalidator.domain.TransactionData;
+public interface BankStatementRepository extends CrudRepository<TransactionData, Integer> {
 
-public interface BankStatementRepository extends CrudRepository<TransactionData, Integer>{
+    TransactionData findByReferenceNo(Integer referenceNo);
 
-	TransactionData findByReferenceNo(Integer referenceNo);
 }

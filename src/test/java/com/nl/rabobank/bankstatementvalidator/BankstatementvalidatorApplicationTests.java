@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BankstatementvalidatorApplicationTests {
 
-	@Test
-	void contextLoads() {
-		BankstatementvalidatorApplication.main(new String[] {});
-	}
+    @Test
+    void contextLoads() {
+        BankstatementvalidatorApplication.main(new String[]{});
+    }
 
 }

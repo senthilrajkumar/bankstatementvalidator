@@ -1,72 +1,72 @@
 <records>
-  <record reference="890498">
-    <accountNumber>NL69ABNA0478647324</accountNumber>
-    <description>Tickets for Peter Theuß</description>
-    <startBalance>26.9</startBalance>
-    <mutation></mutation>
-    <endBalance>8.12</endBalance>
-  </record>
-  <record reference="567875">
-    <accountNumber>NL93ABNA0585619023</accountNumber>
-    <description>Tickets from Erik de Vries</description>
-    <startBalance>5429</startBalance>
-    <mutation>-939</mutation>
-    <endBalance>4490</endBalance>
-  </record>
-  <record reference="747674">
-    <accountNumber>NL93ABNA0585619023</accountNumber>
-    <description>Subscription from Peter Dekker</description>
-    <startBalance>74.69</startBalance>
-    <mutation>-44.91</mutation>
-    <endBalance>29.78</endBalance>
-  </record>
-  <record reference="100607">
-    <accountNumber>NL27SNSB0917829871</accountNumber>
-    <description>Subscription from Peter Theuß</description>
-    <startBalance>70.42</startBalance>
-    <mutation>+34.42</mutation>
-    <endBalance>104.84</endBalance>
-  </record>
-  <record reference="129639">
-    <accountNumber>NL43AEGO0773393871</accountNumber>
-    <description>Tickets for Rik de Vries</description>
-    <startBalance>31.78</startBalance>
-    <mutation>-6.14</mutation>
-    <endBalance>25.64</endBalance>
-  </record>
-  <record reference="155549">
-    <accountNumber>NL43AEGO0773393871</accountNumber>
-    <description>Flowers from Peter de Vries</description>
-    <startBalance>105.75</startBalance>
-    <mutation>-26.17</mutation>
-    <endBalance>79.58</endBalance>
-  </record>
-  <record reference="157438">
-    <accountNumber>NL74ABNA0248990274</accountNumber>
-    <description>Tickets from Richard de Vries</description>
-    <startBalance>10.1</startBalance>
-    <mutation>-0.3</mutation>
-    <endBalance>9.8</endBalance>
-  </record>
-  <record reference="172833">
-    <accountNumber>NL69ABNA0433647324</accountNumber>
-    <description>Tickets for Willem Theuß</description>
-    <startBalance>66.72</startBalance>
-    <mutation>-41.74</mutation>
-    <endBalance>24.98</endBalance>
-  </record>
-  <record reference="122102">
-    <accountNumber>NL93ABNA0585619023</accountNumber>
-    <description>Tickets for Rik Theuß</description>
-    <startBalance>3980</startBalance>
-    <mutation>+1000</mutation>
-    <endBalance>4980</endBalance>
-  </record>
-  <record reference="170848">
-    <accountNumber>NL43AEGO0773393871</accountNumber>
-    <description>Flowers for Jan Theuß</description>
-    <startBalance>16.52</startBalance>
-    <mutation>+43.09</mutation>
-    <endBalance>59.61</endBalance>
-  </record>
+    <record reference="890498">
+        <accountNumber>NL69ABNA0478647324</accountNumber>
+        <description>Tickets for Peter Theuß</description>
+        <startBalance>26.9</startBalance>
+        <mutation></mutation>
+        <endBalance>8.12</endBalance>
+    </record>
+    <record reference="567875">
+        <accountNumber>NL93ABNA0585619023</accountNumber>
+        <description>Tickets from Erik de Vries</description>
+        <startBalance>5429</startBalance>
+        <mutation>-939</mutation>
+        <endBalance>4490</endBalance>
+    </record>
+    <record reference="747674">
+        <accountNumber>NL93ABNA0585619023</accountNumber>
+        <description>Subscription from Peter Dekker</description>
+        <startBalance>74.69</startBalance>
+        <mutation>-44.91</mutation>
+        <endBalance>29.78</endBalance>
+    </record>
+    <record reference="100607">
+        <accountNumber>NL27SNSB0917829871</accountNumber>
+        <description>Subscription from Peter Theuß</description>
+        <startBalance>70.42</startBalance>
+        <mutation>+34.42</mutation>
+        <endBalance>104.84</endBalance>
+    </record>
+    <record reference="129639">
+        <accountNumber>NL43AEGO0773393871</accountNumber>
+        <description>Tickets for Rik de Vries</description>
+        <startBalance>31.78</startBalance>
+        <mutation>-6.14</mutation>
+        <endBalance>25.64</endBalance>
+    </record>
+    <record reference="155549">
+        <accountNumber>NL43AEGO0773393871</accountNumber>
+        <description>Flowers from Peter de Vries</description>
+        <startBalance>105.75</startBalance>
+        <mutation>-26.17</mutation>
+        <endBalance>79.58</endBalance>
+    </record>
+    <record reference="157438">
+        <accountNumber>NL74ABNA0248990274</accountNumber>
+        <description>Tickets from Richard de Vries</description>
+        <startBalance>10.1</startBalance>
+        <mutation>-0.3</mutation>
+        <endBalance>9.8</endBalance>
+    </record>
+    <record reference="172833">
+        <accountNumber>NL69ABNA0433647324</accountNumber>
+        <description>Tickets for Willem Theuß</description>
+        <startBalance>66.72</startBalance>
+        <mutation>-41.74</mutation>
+        <endBalance>24.98</endBalance>
+    </record>
+    <record reference="122102">
+        <accountNumber>NL93ABNA0585619023</accountNumber>
+        <description>Tickets for Rik Theuß</description>
+        <startBalance>3980</startBalance>
+        <mutation>+1000</mutation>
+        <endBalance>4980</endBalance>
+    </record>
+    <record reference="170848">
+        <accountNumber>NL43AEGO0773393871</accountNumber>
+        <description>Flowers for Jan Theuß</description>
+        <startBalance>16.52</startBalance>
+        <mutation>+43.09</mutation>
+        <endBalance>59.61</endBalance>
+    </record>
 </records>

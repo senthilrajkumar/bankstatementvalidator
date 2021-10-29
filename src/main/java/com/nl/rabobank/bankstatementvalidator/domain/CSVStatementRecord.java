@@ -1,13 +1,10 @@
 package com.nl.rabobank.bankstatementvalidator.domain;
 
 import com.opencsv.bean.CsvBindByName;
-
 import lombok.Data;
 
 @Data
 public class CSVStatementRecord {
-	
-
     @CsvBindByName
     private String reference;
 
