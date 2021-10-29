@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -45,19 +46,19 @@ public class XMLProcessor implements FileProcessor {
     }
 
     private TransactionData mapXmlStatementRecord(XMLStatementRecord xmlRecord) {
-        TransactionData record = new TransactionData();
         validateXmlReference(xmlRecord);
         validateXmlAccountNumber(xmlRecord);
         validateXmlStartBalance(xmlRecord);
         validateXmlMutation(xmlRecord);
         validateXmlEndBalance(xmlRecord);
-        record.setReferenceNo(Integer.parseInt(xmlRecord.getReference()));
-        record.setAccountNo(xmlRecord.getAccountNumber());
-        record.setDescription(xmlRecord.getDescription());
-        record.setStartBalance(Double.parseDouble(xmlRecord.getStartBalance()));
-        record.setMutation(xmlRecord.getMutation());
-        record.setEndBalance(Double.parseDouble(xmlRecord.getEndBalance()));
-        return record;
+        return TransactionData.builder()
+                .referenceNo(Long.parseLong(xmlRecord.getReference()))
+                .accountNo(xmlRecord.getAccountNumber())
+                .description(xmlRecord.getDescription())
+                .startBalance(new BigDecimal(xmlRecord.getStartBalance()))
+                .mutation(new BigDecimal(xmlRecord.getMutation()))
+                .endBalance(new BigDecimal(xmlRecord.getEndBalance()))
+                .build();
     }
 
     private void validateXmlEndBalance(XMLStatementRecord xmlRecord) {

@@ -21,7 +21,7 @@ public class BankStatementDaoImpl implements BankStatementDao {
     }
 
     @Override
-    public boolean checkTransactionRecordExists(Integer referenceNo) {
+    public boolean checkTransactionRecordExists(Long referenceNo) {
         if (repository.findByReferenceNo(referenceNo) != null) {
             log.info("Record Exists in DB for referenceNo {}", referenceNo);
             return true;

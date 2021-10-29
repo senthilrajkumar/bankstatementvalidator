@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,23 +59,23 @@ class BankStatementServiceImplTest {
     void testProcessMethodForSuccess() {
         TransactionData data = new TransactionData();
         data.setAccountNo("NL91 ABNA 0417 1643 01");
-        data.setReferenceNo(1);
-        data.setStartBalance(2.0);
-        data.setEndBalance(4.0);
-        data.setMutation("+2.0");
+        data.setReferenceNo(1L);
+        data.setStartBalance(new BigDecimal("2.0"));
+        data.setEndBalance(new BigDecimal("4.0"));
+        data.setMutation(new BigDecimal("+2.0"));
 
         TransactionData dataTwo = new TransactionData();
         dataTwo.setAccountNo("NL91 BANA 0417 1643 02");
-        dataTwo.setReferenceNo(2);
-        dataTwo.setStartBalance(1.0);
-        dataTwo.setEndBalance(2.0);
-        dataTwo.setMutation("+1.0");
+        dataTwo.setReferenceNo(2L);
+        dataTwo.setStartBalance(new BigDecimal("1.0"));
+        dataTwo.setEndBalance(new BigDecimal("2.0"));
+        dataTwo.setMutation(new BigDecimal("+1.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
         transactionData.add(dataTwo);
 
-        when(bankStatementDao.checkTransactionRecordExists(Mockito.anyInt())).thenReturn(false);
+        when(bankStatementDao.checkTransactionRecordExists(Mockito.anyLong())).thenReturn(false);
         response = bankStatementService.processTransactionRecords(transactionData);
         assertEquals("SUCCESSFUL", response.getResult());
         assertEquals(0, response.getErrorRecords().size());
@@ -82,25 +83,27 @@ class BankStatementServiceImplTest {
 
     @Test
     void testProcessMethodForDuplicateReference() {
-        TransactionData data = new TransactionData();
-        data.setAccountNo("NL91 ABNA 0417 1643 01");
-        data.setReferenceNo(1);
-        data.setStartBalance(2.0);
-        data.setEndBalance(4.0);
-        data.setMutation("+2.0");
+        TransactionData data = TransactionData.builder()
+                .referenceNo(1L)
+                .accountNo("NL91 ABNA 0417 1643 01")
+                .startBalance(new BigDecimal("2.0"))
+                .endBalance(new BigDecimal("4.0"))
+                .mutation(new BigDecimal("+2.0"))
+                .build();
+
 
         TransactionData dataTwo = new TransactionData();
         dataTwo.setAccountNo("NL91 BANA 0417 1643 02");
-        dataTwo.setReferenceNo(2);
-        dataTwo.setStartBalance(1.0);
-        dataTwo.setEndBalance(2.0);
-        dataTwo.setMutation("+1.0");
+        dataTwo.setReferenceNo(2L);
+        dataTwo.setStartBalance(new BigDecimal("1.0"));
+        dataTwo.setEndBalance(new BigDecimal("2.0"));
+        dataTwo.setMutation(new BigDecimal("+1.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
         transactionData.add(dataTwo);
 
-        when(bankStatementDao.checkTransactionRecordExists(1)).thenReturn(true);
+        when(bankStatementDao.checkTransactionRecordExists(1L)).thenReturn(true);
         response = bankStatementService.processTransactionRecords(transactionData);
         assertEquals("DUPLICATE_REFERENCE", response.getResult());
         assertEquals(1, response.getErrorRecords().size());
@@ -110,15 +113,15 @@ class BankStatementServiceImplTest {
     void testProcessMethodForInCorrectEndBalance() {
         TransactionData data = new TransactionData();
         data.setAccountNo("NL91 ABNA 0417 1643 01");
-        data.setReferenceNo(4);
-        data.setStartBalance(4.0);
-        data.setEndBalance(1.0);
-        data.setMutation("-2.0");
+        data.setReferenceNo(4L);
+        data.setStartBalance(new BigDecimal("4.0"));
+        data.setEndBalance(new BigDecimal("1.0"));
+        data.setMutation(new BigDecimal("-2.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
 
-        when(bankStatementDao.checkTransactionRecordExists(4)).thenReturn(false);
+        when(bankStatementDao.checkTransactionRecordExists(4L)).thenReturn(false);
         response = bankStatementService.processTransactionRecords(transactionData);
         assertEquals("INCORRECT_END_BALANCE", response.getResult());
         assertEquals(1, response.getErrorRecords().size());
@@ -128,15 +131,15 @@ class BankStatementServiceImplTest {
     void testProcessMethodForBothDuplicateAndInCorrectBalance() {
         TransactionData data = new TransactionData();
         data.setAccountNo("NL91 ABNA 0417 1643 01");
-        data.setReferenceNo(5);
-        data.setStartBalance(4.0);
-        data.setEndBalance(1.0);
-        data.setMutation("-1.0");
+        data.setReferenceNo(5L);
+        data.setStartBalance(new BigDecimal("4.0"));
+        data.setEndBalance(new BigDecimal("1.0"));
+        data.setMutation(new BigDecimal("-1.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
 
-        when(bankStatementDao.checkTransactionRecordExists(5)).thenReturn(true);
+        when(bankStatementDao.checkTransactionRecordExists(5L)).thenReturn(true);
         response = bankStatementService.processTransactionRecords(transactionData);
         assertEquals("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE", response.getResult());
         assertEquals(2, response.getErrorRecords().size());
@@ -146,15 +149,15 @@ class BankStatementServiceImplTest {
     void testProcessMethodForInternalServerError() {
         TransactionData data = new TransactionData();
         data.setAccountNo("NL91 ABNA 0417 1643 15");
-        data.setReferenceNo(6);
-        data.setStartBalance(4.0);
-        data.setEndBalance(2.0);
-        data.setMutation("-2.0");
+        data.setReferenceNo(6L);
+        data.setStartBalance(new BigDecimal("4.0"));
+        data.setEndBalance(new BigDecimal("2.0"));
+        data.setMutation( new BigDecimal("-2.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
 
-        when(bankStatementDao.checkTransactionRecordExists(6)).thenThrow(new RuntimeException("DB is not available"));
+        when(bankStatementDao.checkTransactionRecordExists(6L)).thenThrow(new RuntimeException("DB is not available"));
         assertThrows(BankStatementDBException.class, () -> bankStatementService.processTransactionRecords(transactionData));
 
     }
@@ -164,31 +167,31 @@ class BankStatementServiceImplTest {
     void testWhenBothDuplicateAndInCorrectBalanceForMultipleRec() {
         TransactionData data = new TransactionData();
         data.setAccountNo("NL91 ABNA 0417 1643 20");
-        data.setReferenceNo(20);
-        data.setStartBalance(4.0);
-        data.setEndBalance(1.0);
-        data.setMutation("-2.0");
+        data.setReferenceNo(20L);
+        data.setStartBalance(new BigDecimal("4.0"));
+        data.setEndBalance(new BigDecimal("1.0"));
+        data.setMutation(new BigDecimal("-2.0"));
 
         TransactionData dataTwo = new TransactionData();
         dataTwo.setAccountNo("NL91 ABNA 0417 1643 21");
-        dataTwo.setReferenceNo(21);
-        dataTwo.setStartBalance(4.0);
-        dataTwo.setEndBalance(5.0);
-        dataTwo.setMutation("+1.0");
+        dataTwo.setReferenceNo(21L);
+        dataTwo.setStartBalance(new BigDecimal("4.0"));
+        dataTwo.setEndBalance(new BigDecimal("5.0"));
+        dataTwo.setMutation(new BigDecimal("+1.0"));
 
         TransactionData dataThree = new TransactionData();
         dataThree.setAccountNo("NL91 ABNA 0417 1643 22");
-        dataThree.setReferenceNo(22);
-        dataThree.setStartBalance(4.0);
-        dataThree.setEndBalance(1.0);
-        dataThree.setMutation("+2.0");
+        dataThree.setReferenceNo(22L);
+        dataThree.setStartBalance(new BigDecimal("4.0"));
+        dataThree.setEndBalance(new BigDecimal("1.0"));
+        dataThree.setMutation(new BigDecimal("+2.0"));
 
         TransactionData dataFour = new TransactionData();
         dataFour.setAccountNo("NL91 ABNA 0417 1643 23");
-        dataFour.setReferenceNo(22);
-        dataFour.setStartBalance(4.0);
-        dataFour.setEndBalance(6.0);
-        dataFour.setMutation("+2.0");
+        dataFour.setReferenceNo(22L);
+        dataFour.setStartBalance(new BigDecimal("4.0"));
+        dataFour.setEndBalance(new BigDecimal("6.0"));
+        dataFour.setMutation(new BigDecimal("+2.0"));
 
         List<TransactionData> transactionData = new ArrayList<>();
         transactionData.add(data);
@@ -196,8 +199,8 @@ class BankStatementServiceImplTest {
         transactionData.add(dataThree);
         transactionData.add(dataFour);
 
-        when(bankStatementDao.checkTransactionRecordExists(20)).thenReturn(true);
-        when(bankStatementDao.checkTransactionRecordExists(21)).thenReturn(true);
+        when(bankStatementDao.checkTransactionRecordExists(20L)).thenReturn(true);
+        when(bankStatementDao.checkTransactionRecordExists(21L)).thenReturn(true);
         response = bankStatementService.processTransactionRecords(transactionData);
         assertEquals("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE", response.getResult());
         assertEquals(5, response.getErrorRecords().size());
@@ -226,7 +229,7 @@ class BankStatementServiceImplTest {
 
     @Test
     public void checkDBIsNotAvailable() {
-        when(bankStatementDao.checkTransactionRecordExists(1)).thenThrow(new RuntimeException("DB is down"));
+        when(bankStatementDao.checkTransactionRecordExists(1L)).thenThrow(new RuntimeException("DB is down"));
         boolean isDBAvailable = bankStatementService.checkDBIsAvailable();
         assertFalse(isDBAvailable);
     }

@@ -62,7 +62,7 @@ public class BankStatementServiceImpl implements BankStatementService {
         List<ErrorRecord> inCorreectBalanceErrorRecords = new ArrayList<>();
         List<TransactionData> distinctElements = records.stream().filter(CommonUtil.distinctByKey(TransactionData::getReferenceNo))
                 .collect(Collectors.toList());
-        Set<Integer> inputRecords = new HashSet<>();
+        Set<Long> inputRecords = new HashSet<>();
         List<TransactionData> duplicateInputRecords = records.stream().filter(record -> !inputRecords.add(record.getReferenceNo()))
                 .collect(Collectors.toList());
         for (TransactionData data : distinctElements) {
@@ -84,8 +84,8 @@ public class BankStatementServiceImpl implements BankStatementService {
                 log.error("exception occured {}", ex.getMessage());
                 throw new BankStatementDBException(ex.getMessage());
             }
-            BigDecimal sum = BigDecimal.valueOf(Double.sum(Double.valueOf(data.getMutation()), data.getStartBalance())).setScale(2, RoundingMode.HALF_UP);
-            if (sum.compareTo(BigDecimal.valueOf(data.getEndBalance())) != 0) {
+            BigDecimal sum = data.getStartBalance().add(data.getMutation()).setScale(2, RoundingMode.HALF_UP);
+            if (sum.compareTo(data.getEndBalance()) != 0) {
                 log.info("inCorrectbalance record reference No {}", data.getReferenceNo());
                 log.info("getMutation {}", data.getMutation());
                 ErrorRecord inCorrectbalanceErrRecord = new ErrorRecord();
@@ -104,8 +104,8 @@ public class BankStatementServiceImpl implements BankStatementService {
             errRecord.setAccountNumber(data.getAccountNo().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
             errRecord.setReferenceNo(data.getReferenceNo().toString().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
             duplicateErrorRecords.add(errRecord);
-            BigDecimal sum = BigDecimal.valueOf(Double.sum(Double.valueOf(data.getMutation()), data.getStartBalance())).setScale(2, RoundingMode.HALF_UP);
-            if (sum.compareTo(BigDecimal.valueOf(data.getEndBalance())) != 0) {
+            BigDecimal sum = data.getStartBalance().add(data.getMutation()).setScale(2, RoundingMode.HALF_UP);
+            if (sum.compareTo(data.getEndBalance()) != 0) {
                 log.debug("inCorrectbalance record reference No {}", data.getReferenceNo());
                 ErrorRecord inCorrectbalanceErrRecord = new ErrorRecord();
                 inCorrectbalanceErrRecord.setAccountNumber(
@@ -139,7 +139,7 @@ public class BankStatementServiceImpl implements BankStatementService {
     @Override
     public boolean checkDBIsAvailable() {
         try {
-            bankStatementDao.checkTransactionRecordExists(1);
+            bankStatementDao.checkTransactionRecordExists(1L);
             return true;
         } catch (Exception ex) {
             return false;

@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,19 +40,19 @@ public class CSVProcessor implements FileProcessor {
     }
 
     private TransactionData mapCsvStatementRecord(CSVStatementRecord record) {
-        TransactionData data = new TransactionData();
         validateReference(record);
         validateAccountNumber(record);
         validateStartBalance(record);
         validateMutation(record);
         validateEndBalance(record);
-        data.setReferenceNo(Integer.parseInt(record.getReference()));
-        data.setAccountNo(record.getAccountNumber());
-        data.setDescription(record.getDescription());
-        data.setStartBalance(Double.parseDouble(record.getStartBalance()));
-        data.setMutation(record.getMutation());
-        data.setEndBalance(Double.parseDouble(record.getEndBalance()));
-        return data;
+        return TransactionData.builder()
+                .referenceNo(Long.parseLong(record.getReference()))
+                .accountNo(record.getAccountNumber())
+                .description(record.getDescription())
+                .startBalance(new BigDecimal(record.getStartBalance()))
+                .mutation(new BigDecimal(record.getMutation()))
+                .endBalance(new BigDecimal(record.getEndBalance()))
+                .build();
     }
 
     private void validateEndBalance(CSVStatementRecord record) {

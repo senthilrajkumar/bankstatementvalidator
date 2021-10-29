@@ -6,6 +6,6 @@ public interface BankStatementDao {
 
     void persistTransactionRecords(TransactionData record);
 
-    boolean checkTransactionRecordExists(Integer referenceNo);
+    boolean checkTransactionRecordExists(Long referenceNo);
 
 }
