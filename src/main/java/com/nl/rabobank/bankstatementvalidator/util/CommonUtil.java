@@ -19,21 +19,13 @@ public final class CommonUtil {
 
 	public static boolean hasCSVFormat(MultipartFile file) {
 
-		if (!ApplicationConstant.CSV_TYPE.equals(file.getContentType())) {
-			return false;
-		}
-
-		return true;
-	}
+        return ApplicationConstant.CSV_TYPE.equals(file.getContentType());
+    }
 
 	public static boolean hasXMLFormat(MultipartFile file) {
 
-		if (ApplicationConstant.TEXT_XML_TYPE.equals(file.getContentType())
-				|| ApplicationConstant.APP_XML_TYPE.equals(file.getContentType())) {
-			return true;
-		}
-
-		return false;
-	}
+        return ApplicationConstant.TEXT_XML_TYPE.equals(file.getContentType())
+                || ApplicationConstant.APP_XML_TYPE.equals(file.getContentType());
+    }
 
 }

@@ -82,7 +82,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 					log.info("record exists in DB for refNo {}" , data.getReferenceNo());
 					ErrorRecord errRecord = new ErrorRecord();
 					errRecord.setAccountNumber(
-							data.getAccountNo().toString().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
+							data.getAccountNo().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
 					errRecord.setReferenceNo(
 							data.getReferenceNo().toString().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
 					duplicateErrorRecords.add(errRecord);
@@ -102,7 +102,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 						, data.getStartBalance() , " getEndBalance {}" , data.getEndBalance());
 				ErrorRecord inCorrectbalanceErrRecord = new ErrorRecord();
 				inCorrectbalanceErrRecord.setAccountNumber(
-						data.getAccountNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
+						data.getAccountNo().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
 				inCorrectbalanceErrRecord.setReferenceNo(
 						data.getReferenceNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
 				inCorreectBalanceErrorRecords.add(inCorrectbalanceErrRecord);
@@ -114,7 +114,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 
 		for (TransactionData data : duplicateInputRecords) {
 			ErrorRecord errRecord = new ErrorRecord();
-			errRecord.setAccountNumber(data.getAccountNo().toString().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
+			errRecord.setAccountNumber(data.getAccountNo().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
 			errRecord.setReferenceNo(data.getReferenceNo().toString().concat(ApplicationConstant.OF_DUPLICATE_RECORD));
 			duplicateErrorRecords.add(errRecord);
 			BigDecimal sum = BigDecimal.valueOf(Double.sum(Double.valueOf(data.getMutation()), data.getStartBalance())).setScale(2, RoundingMode.HALF_UP);
@@ -123,7 +123,7 @@ public class BankStatementServiceImpl implements BankStatementService {
 						, data.getAccountNo());
 				ErrorRecord inCorrectbalanceErrRecord = new ErrorRecord();
 				inCorrectbalanceErrRecord.setAccountNumber(
-						data.getAccountNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
+						data.getAccountNo().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
 				inCorrectbalanceErrRecord.setReferenceNo(
 						data.getReferenceNo().toString().concat(ApplicationConstant.OF_IN_CORRECT_END_BALANCE_RECORD));
 				inCorreectBalanceErrorRecords.add(inCorrectbalanceErrRecord);

@@ -6,9 +6,6 @@ package com.nl.rabobank.bankstatementvalidator.constant;
  */
 public final class ApplicationConstant {
 
-	public static final String V1_RECORD_VERIFICATION = "/v1/record-verification";
-	public static final String BANK_STATEMENT = "/bank-statement";
-
 	public static final String APPLICATION_IS_UP_AND_RUNNING = "Application is Up and Running";
 
 	public static final String DB_IS_UP_AND_RUNNING = "DB is Up and Running";
