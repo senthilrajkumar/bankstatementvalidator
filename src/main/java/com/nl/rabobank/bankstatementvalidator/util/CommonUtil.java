@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 
 public final class CommonUtil {
 
-    // predicate to filter the duplicates by the given key extractor.
     public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
         Map<Object, Boolean> uniqueMap = new ConcurrentHashMap<>();
         return t -> uniqueMap.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

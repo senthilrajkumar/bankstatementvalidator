@@ -60,7 +60,6 @@ public class BankStatementServiceImpl implements BankStatementService {
         StatementResponse response = new StatementResponse();
         List<ErrorRecord> duplicateErrorRecords = new ArrayList<>();
         List<ErrorRecord> inCorreectBalanceErrorRecords = new ArrayList<>();
-
         List<TransactionData> distinctElements = records.stream().filter(CommonUtil.distinctByKey(TransactionData::getReferenceNo))
                 .collect(Collectors.toList());
         Set<Integer> inputRecords = new HashSet<>();
