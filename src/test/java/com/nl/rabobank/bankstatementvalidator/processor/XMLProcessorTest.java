@@ -70,29 +70,29 @@ class XMLProcessorTest {
 
     @Test
     public void processWhenEndBalanceMissing() {
-        FileProcessor csvProcessor = new CSVProcessor();
+        FileProcessor xmlProcessor = new XMLProcessor();
         Exception exception = assertThrows(
                 TransactionDataInputException.class,
-                () -> csvProcessor.process(getClass().getResourceAsStream("/records-input-missing-endbalance.csv")));
+                () -> xmlProcessor.process(getClass().getResourceAsStream("/records-input-missing-endbalance.xml")));
         assertTrue(exception.getMessage().contains("End Balance is mandatory"));
     }
 
     @Test
     public void processForWrongFormatAccountNumber() {
-        FileProcessor csvProcessor = new CSVProcessor();
+        FileProcessor xmlProcessor = new XMLProcessor();
         Exception exception = assertThrows(
                 TransactionDataInputException.class,
-                () -> csvProcessor.process(getClass().getResourceAsStream("/records-improper-account-number.csv")));
+                () -> xmlProcessor.process(getClass().getResourceAsStream("/records-improper-account-number.xml")));
         assertTrue(exception.getMessage().contains("Account Number should be in the right format"));
     }
 
     @Test
     public void processForWrongFormatOfCsv() {
-        FileProcessor csvProcessor = new CSVProcessor();
+        FileProcessor xmlProcessor = new XMLProcessor();
         Exception exception = assertThrows(
                 RuntimeException.class,
-                () -> csvProcessor.process(null));
-        assertTrue(exception.getMessage().contains("fail to parse CSV file"));
+                () -> xmlProcessor.process(null));
+        assertTrue(exception.getMessage().contains("fail to parse XML file"));
     }
 
 }
