@@ -51,44 +51,70 @@ public class XMLProcessor implements FileProcessor {
 	private TransactionData mapXmlStatementRecord(XMLStatementRecord xmlRecord) {
 
 		TransactionData record = new TransactionData();
-		String reference = xmlRecord.getReference();
-		if (StringUtils.hasText(reference))
-			record.setReferenceNo(Integer.parseInt(reference));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
+		validateXmlReference(xmlRecord, record);
 
 		String accountNumber = xmlRecord.getAccountNumber();
-		if (StringUtils.hasText(accountNumber)) {
-
-			boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNumber).matches();
-			if (!isIBAN)
-				throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
-			else
-				record.setAccountNo(accountNumber);
-		} else
-			throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
+		validateXmlAccountNumber(record, accountNumber);
 
 		record.setDescription(xmlRecord.getDescription());
 
-		String startBalance = xmlRecord.getStartBalance();
-		if (StringUtils.hasText(startBalance))
-			record.setStartBalance(Double.parseDouble(startBalance));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
+		validateXmlStartBalance(xmlRecord, record);
 
-		String mutation = xmlRecord.getMutation();
-		if (StringUtils.hasText(mutation))
-			record.setMutation(mutation);
-		else
-			throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
+		validateXmlMutation(xmlRecord, record);
 
-		String endBalance = xmlRecord.getEndBalance();
-		if (StringUtils.hasText(endBalance))
-			record.setEndBalance(Double.parseDouble(endBalance));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
+		validateXmlEndBalance(xmlRecord, record);
 
 		return record;
+	}
+
+	private void validateXmlEndBalance(XMLStatementRecord xmlRecord, TransactionData record) {
+		String endBalanceFromXml = xmlRecord.getEndBalance();
+		if (StringUtils.hasText(endBalanceFromXml)) {
+			record.setEndBalance(Double.parseDouble(endBalanceFromXml));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
+		}
+	}
+
+	private void validateXmlMutation(XMLStatementRecord xmlRecord, TransactionData record) {
+		String mutationFromXml = xmlRecord.getMutation();
+		if (StringUtils.hasText(mutationFromXml)) {
+			record.setMutation(mutationFromXml);
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
+		}
+	}
+
+	private void validateXmlStartBalance(XMLStatementRecord xmlRecord, TransactionData record) {
+		String startBalanceFromXml = xmlRecord.getStartBalance();
+		if (StringUtils.hasText(startBalanceFromXml)) {
+			record.setStartBalance(Double.parseDouble(startBalanceFromXml));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
+		}
+	}
+
+	private void validateXmlAccountNumber(TransactionData record, String accountNumberFromXml) {
+		if (StringUtils.hasText(accountNumberFromXml)) {
+
+			boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNumberFromXml).matches();
+			if (!isIBAN) {
+				throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
+			} else {
+				record.setAccountNo(accountNumberFromXml);
+			}
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
+		}
+	}
+
+	private void validateXmlReference(XMLStatementRecord xmlRecord, TransactionData record) {
+		String referenceFromXml = xmlRecord.getReference();
+		if (StringUtils.hasText(referenceFromXml)) {
+			record.setReferenceNo(Integer.parseInt(referenceFromXml));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
+		}
 	}
 
 }

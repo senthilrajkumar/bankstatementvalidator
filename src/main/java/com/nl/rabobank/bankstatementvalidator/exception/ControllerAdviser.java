@@ -31,12 +31,12 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(value = TransactionDataInputException.class)
 	public ResponseEntity<Object> handleDataInputException(Exception ex) {
 		log.error("handleDataInputException {}", ex.getMessage());
-		Map<String, Object> body = new LinkedHashMap<>();
-		body.put("result", HttpStatus.BAD_REQUEST);
-		body.put("errorRecords", ex.getMessage());
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<>(body, header, HttpStatus.BAD_REQUEST);
+		Map<String, Object> responseBody = new LinkedHashMap<>();
+		responseBody.put("result", HttpStatus.BAD_REQUEST);
+		responseBody.put("errorRecords", ex.getMessage());
+		HttpHeaders httpHeader = new HttpHeaders();
+		httpHeader.setContentType(MediaType.APPLICATION_JSON);
+		return new ResponseEntity<>(responseBody, httpHeader, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = BankStatementDBException.class)
@@ -81,20 +81,20 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		log.error("handleHttpMessageNotReadable---->");
-		Map<String, Object> body = new LinkedHashMap<>();
-		body.put("result", HttpStatus.BAD_REQUEST);
-		body.put("errorRecords", ex.getMessage());
+		Map<String, Object> response = new LinkedHashMap<>();
+		response.put("result", HttpStatus.BAD_REQUEST);
+		response.put("errorRecords", ex.getMessage());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<>(body, header, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, header, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<Object> handleException(Exception ex) {
 		log.error("handleException {}", ex.getMessage());
 		Map<String, Object> body = new LinkedHashMap<>();
-		body.put("result", HttpStatus.INTERNAL_SERVER_ERROR);
 		body.put("errorRecords", ex.getMessage());
+		body.put("result", HttpStatus.INTERNAL_SERVER_ERROR);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
 		return new ResponseEntity<>(body, header, HttpStatus.INTERNAL_SERVER_ERROR);

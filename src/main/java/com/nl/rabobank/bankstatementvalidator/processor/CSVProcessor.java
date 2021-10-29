@@ -31,42 +31,68 @@ public class CSVProcessor implements FileProcessor {
 	private TransactionData mapCsvStatementRecord(CSVStatementRecord record) {
 
 		TransactionData data = new TransactionData();
-		String reference = record.getReference();
-		if (StringUtils.hasText(reference))
-			data.setReferenceNo(Integer.parseInt(reference));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
+		validateReference(record, data);
 
-		String accountNo = record.getAccountNumber();
-		if (StringUtils.hasText(accountNo)) {
-			boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNo).matches();
-			if (!isIBAN)
-				throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
-			else
-				data.setAccountNo(accountNo);
-		} else
-			throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
+		validateAccountNumber(record, data);
 
 		data.setDescription(record.getDescription());
 
-		String startBalance = record.getStartBalance();
-		if (StringUtils.hasText(startBalance))
-			data.setStartBalance(Double.parseDouble(startBalance));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
+		validateStartBalance(record, data);
 
-		String mutation = record.getMutation();
-		if (StringUtils.hasText(mutation))
-			data.setMutation(mutation);
-		else
-			throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
-		String endBalance = record.getEndBalance();
-		if (StringUtils.hasText(endBalance))
-			data.setEndBalance(Double.parseDouble(endBalance));
-		else
-			throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
+		validateMutation(record, data);
+		validateEndBalance(record, data);
 
 		return data;
+	}
+
+	private void validateEndBalance(CSVStatementRecord record, TransactionData data) {
+		String endBalance = record.getEndBalance();
+		if (StringUtils.hasText(endBalance)) {
+			data.setEndBalance(Double.parseDouble(endBalance));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.END_BALANCE_IS_MANDATORY);
+		}
+	}
+
+	private void validateMutation(CSVStatementRecord record, TransactionData data) {
+		String mutation = record.getMutation();
+		if (StringUtils.hasText(mutation)) {
+			data.setMutation(mutation);
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.MUTATION_IS_MANDATORY);
+		}
+	}
+
+	private void validateStartBalance(CSVStatementRecord record, TransactionData data) {
+		String startBalance = record.getStartBalance();
+		if (StringUtils.hasText(startBalance)) {
+			data.setStartBalance(Double.parseDouble(startBalance));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.START_BALANCE_IS_MANDATORY);
+		}
+	}
+
+	private void validateAccountNumber(CSVStatementRecord record, TransactionData data) {
+		String accountNo = record.getAccountNumber();
+		if (StringUtils.hasText(accountNo)) {
+			boolean isIBAN = Pattern.compile(ApplicationConstant.REGEX_IBAN).matcher(accountNo).matches();
+			if (!isIBAN) {
+				throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_FORMAT);
+			} else {
+				data.setAccountNo(accountNo);
+			}
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.ACCOUNT_NUMBER_IS_MANDATORY);
+		}
+	}
+
+	private void validateReference(CSVStatementRecord record, TransactionData data) {
+		String reference = record.getReference();
+		if (StringUtils.hasText(reference)) {
+			data.setReferenceNo(Integer.parseInt(reference));
+		} else {
+			throw new TransactionDataInputException(ApplicationConstant.TRANSACTION_REFERENCE_IS_MANDATORY);
+		}
 	}
 
 	@Override
