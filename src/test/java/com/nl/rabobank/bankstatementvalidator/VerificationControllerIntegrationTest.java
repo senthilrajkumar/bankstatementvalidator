@@ -40,7 +40,7 @@ public class VerificationControllerIntegrationTest {
 	BankStatementController bankStatementController;
 
 	@BeforeEach
-	public void setup() throws Exception {
+	public void setup() {
 		this.mockMvc = standaloneSetup(this.bankStatementController).build();
 	}
 

@@ -32,43 +32,39 @@ public class BankStatementController {
 	private static final Logger log = LoggerFactory.getLogger(BankStatementController.class);
 
 	@Autowired
-	BankStatementService bankStatementService;
+	protected BankStatementService bankStatementService;
 
 	@ApiOperation(value = "process Bank Statement Transaction CSV file Record Details", response = StatementResponse.class)
 	@PostMapping(path = "/v1/uploadCsv")
 	public ResponseEntity<StatementResponse> uploadCSVFile(@RequestParam("file") MultipartFile file)
 			throws IOException {
-		String message = "";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 
 		if (CommonUtil.hasCSVFormat(file)) {
 			StatementResponse response = bankStatementService.processCsvFile(file);
-			return new ResponseEntity<StatementResponse>(response, headers, HttpStatus.OK);
+			return new ResponseEntity<>(response, headers, HttpStatus.OK);
 		}
-		message = ApplicationConstant.CSV_FILE;
 		StatementResponse response = new StatementResponse();
-		response.setResult(message);
+		response.setResult(ApplicationConstant.CSV_FILE);
 
-		return new ResponseEntity<StatementResponse>(response, headers, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
 	}
 
 	@ApiOperation(value = "process Bank Statement Transaction XML file Record Details", response = StatementResponse.class)
 	@PostMapping(path = "/v1/uploadXml")
 	public ResponseEntity<StatementResponse> uploadXMLFile(@RequestParam("file") MultipartFile file)
 			throws IOException {
-		String message = "";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		if (CommonUtil.hasXMLFormat(file)) {
 			StatementResponse response = bankStatementService.processXmlFile(file);
-			return new ResponseEntity<StatementResponse>(response, headers, HttpStatus.OK);
+			return new ResponseEntity<>(response, headers, HttpStatus.OK);
 		}
-		message = ApplicationConstant.XML_FILE;
 		StatementResponse response = new StatementResponse();
-		response.setResult(message);
+		response.setResult(ApplicationConstant.XML_FILE);
 
-		return new ResponseEntity<StatementResponse>(response, headers, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
 	}
 
 	@ApiOperation(value = "Application Health Check API", response = String.class)
@@ -77,7 +73,7 @@ public class BankStatementController {
 		log.info("performAppHealthCheck method --->");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<String>(ApplicationConstant.APPLICATION_IS_UP_AND_RUNNING, headers, HttpStatus.OK);
+		return new ResponseEntity<>(ApplicationConstant.APPLICATION_IS_UP_AND_RUNNING, headers, HttpStatus.OK);
 	}
 
 	@ApiOperation(value = "Database Health Check API", response = String.class)
@@ -88,10 +84,10 @@ public class BankStatementController {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		if (bankStatementService.checkDBIsAvailable()) {
 			log.info("DB is Up and Running  --->");
-			return new ResponseEntity<String>(ApplicationConstant.DB_IS_UP_AND_RUNNING, headers, HttpStatus.OK);
+			return new ResponseEntity<>(ApplicationConstant.DB_IS_UP_AND_RUNNING, headers, HttpStatus.OK);
 		} else {
 			log.info("DB is Down  --->");
-			return new ResponseEntity<String>(ApplicationConstant.DB_IS_DOWN, headers,
+			return new ResponseEntity<>(ApplicationConstant.DB_IS_DOWN, headers,
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

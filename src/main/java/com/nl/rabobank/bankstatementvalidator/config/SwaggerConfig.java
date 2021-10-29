@@ -2,6 +2,7 @@ package com.nl.rabobank.bankstatementvalidator.config;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
@@ -24,9 +25,9 @@ public class SwaggerConfig {
 
 	public static final ApiInfo DEFAULT_API_INFO = new ApiInfo("API for CSV and XML file Bank Statement Verification",
 			"API for Bank Statement Verification", "1.0", "urn:tos", DEFAULT_CONTACT, "Apache 2.0",
-			"http://www.apache.org/licenses/LICENSE-2.0", Arrays.asList());
+			"http://www.apache.org/licenses/LICENSE-2.0", List.of());
 
-	private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<String>(
+	private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES = new HashSet<>(
 			Arrays.asList("application/json", "application/xml"));
 
 	

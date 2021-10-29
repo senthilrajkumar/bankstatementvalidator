@@ -4,8 +4,8 @@ import com.nl.rabobank.bankstatementvalidator.domain.TransactionData;
 
 public interface BankStatementDao {
 	
-	void persistTransactionRecords(TransactionData record) throws Exception;
+	void persistTransactionRecords(TransactionData record);
 	
-	boolean checkTransactionRecordExists(Integer referenceNo) throws Exception;
+	boolean checkTransactionRecordExists(Integer referenceNo);
 
 }

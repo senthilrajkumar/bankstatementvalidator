@@ -41,12 +41,12 @@ class BankStatementServiceImplTest {
 	private StatementResponse response;
 	
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		response = new StatementResponse();
 	}
 
 	@AfterEach
-	void tearDown() throws Exception {
+	void tearDown() {
 		response = null;
 	}
 	
@@ -56,7 +56,7 @@ class BankStatementServiceImplTest {
     }
 	
 	@Test
-	void testProcessMethodForSuccess() throws Exception {
+	void testProcessMethodForSuccess() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 01");
 		data.setReferenceNo(1);
@@ -71,18 +71,18 @@ class BankStatementServiceImplTest {
 		dataTwo.setEndBalance(2.0);
 		dataTwo.setMutation("+1.0");
 		
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		transactionData.add(dataTwo);
 		
 		when(bankStatementDao.checkTransactionRecordExists(Mockito.anyInt())).thenReturn(false);
 		response = bankStatementService.processTransactionRecords(transactionData);
 		assertEquals("SUCCESSFUL", response.getResult());
-		assertTrue(response.getErrorRecords().size() == 0);
+		assertEquals(0, response.getErrorRecords().size());
 	}
 	
 	@Test
-	void testProcessMethodForDuplicateReference() throws Exception {
+	void testProcessMethodForDuplicateReference() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 01");
 		data.setReferenceNo(1);
@@ -97,18 +97,18 @@ class BankStatementServiceImplTest {
 		dataTwo.setEndBalance(2.0);
 		dataTwo.setMutation("+1.0");
 		
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		transactionData.add(dataTwo);
 		
 		when(bankStatementDao.checkTransactionRecordExists(1)).thenReturn(true);
 		response = bankStatementService.processTransactionRecords(transactionData);
 		assertEquals("DUPLICATE_REFERENCE", response.getResult());
-		assertTrue(response.getErrorRecords().size() == 1);
+		assertEquals(1, response.getErrorRecords().size());
 	}
 	
 	@Test
-	void testProcessMethodForInCorrectEndBalance() throws Exception {
+	void testProcessMethodForInCorrectEndBalance() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 01");
 		data.setReferenceNo(4);
@@ -116,17 +116,17 @@ class BankStatementServiceImplTest {
 		data.setEndBalance(1.0);
 		data.setMutation("-2.0");
 	
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		
 		when(bankStatementDao.checkTransactionRecordExists(4)).thenReturn(false);
 		response = bankStatementService.processTransactionRecords(transactionData);
 		assertEquals("INCORRECT_END_BALANCE", response.getResult());
-		assertTrue(response.getErrorRecords().size() == 1);
+		assertEquals(1, response.getErrorRecords().size());
 	}
 	
 	@Test
-	void testProcessMethodForBothDuplicateAndInCorrectBalance() throws Exception {
+	void testProcessMethodForBothDuplicateAndInCorrectBalance() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 01");
 		data.setReferenceNo(5);
@@ -134,17 +134,17 @@ class BankStatementServiceImplTest {
 		data.setEndBalance(1.0);
 		data.setMutation("-1.0");
 	
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		
 		when(bankStatementDao.checkTransactionRecordExists(5)).thenReturn(true);
 		response = bankStatementService.processTransactionRecords(transactionData);
 		assertEquals("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE", response.getResult());
-		assertTrue(response.getErrorRecords().size() == 2);
+		assertEquals(2, response.getErrorRecords().size());
 	}
 	
 	@Test
-	void testProcessMethodForInternalServerError() throws Exception {
+	void testProcessMethodForInternalServerError() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 15");
 		data.setReferenceNo(6);
@@ -152,7 +152,7 @@ class BankStatementServiceImplTest {
 		data.setEndBalance(2.0);
 		data.setMutation("-2.0");
 	
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		
 		when(bankStatementDao.checkTransactionRecordExists(6)).thenThrow(new RuntimeException("DB is not available"));
@@ -162,7 +162,7 @@ class BankStatementServiceImplTest {
 	
 	//this test case covers the input json itself contains duplicates and also have duplicates when invoke db and Incorrect balance
 	@Test
-	void testWhenBothDuplicateAndInCorrectBalanceForMultipleRec() throws Exception {
+	void testWhenBothDuplicateAndInCorrectBalanceForMultipleRec() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 20");
 		data.setReferenceNo(20);
@@ -191,7 +191,7 @@ class BankStatementServiceImplTest {
 		dataFour.setEndBalance(6.0);
 		dataFour.setMutation("+2.0");
 	
-		List<TransactionData> transactionData =  new ArrayList<TransactionData>();
+		List<TransactionData> transactionData =  new ArrayList<>();
 		transactionData.add(data);
 		transactionData.add(dataTwo);
 		transactionData.add(dataThree);
@@ -201,7 +201,7 @@ class BankStatementServiceImplTest {
 		when(bankStatementDao.checkTransactionRecordExists(21)).thenReturn(true);
 		response = bankStatementService.processTransactionRecords(transactionData);
 		assertEquals("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE", response.getResult());
-		assertTrue(response.getErrorRecords().size() == 5);
+		assertEquals(5, response.getErrorRecords().size());
 	}
 	
 	@Test
@@ -220,15 +220,15 @@ class BankStatementServiceImplTest {
 	
 	
 	@Test
-    public void checkDBIsAvailable() throws IOException {
-        Boolean  isDBAvailable = bankStatementService.checkDBIsAvailable();
+    public void checkDBIsAvailable() {
+        boolean  isDBAvailable = bankStatementService.checkDBIsAvailable();
         assertTrue(isDBAvailable);
     }
 	
 	@Test
-    public void checkDBIsNotAvailable() throws Exception {
+    public void checkDBIsNotAvailable() {
 		when(bankStatementDao.checkTransactionRecordExists(1)).thenThrow(new RuntimeException("DB is down"));
-        Boolean  isDBAvailable = bankStatementService.checkDBIsAvailable();
+        boolean  isDBAvailable = bankStatementService.checkDBIsAvailable();
         assertFalse(isDBAvailable);
     }
 	

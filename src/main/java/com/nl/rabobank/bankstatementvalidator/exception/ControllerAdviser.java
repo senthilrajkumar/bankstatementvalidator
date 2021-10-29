@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.validation.ConstraintViolation;
 
 @ControllerAdvice
 @RestController
@@ -33,7 +36,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 		body.put("errorRecords", ex.getMessage());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<Object>(body, header, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(body, header, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = BankStatementDBException.class)
@@ -44,7 +47,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 		body.put("errorRecords", ex.getMessage());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<Object>(body, header, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(body, header, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		log.error("handleMethodArgumentNotValid---->");
 		Map<String, Object> body = new LinkedHashMap<>();
-		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(x -> x.getDefaultMessage())
+		List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
 				.collect(Collectors.toList());
 		body.put("result", HttpStatus.BAD_REQUEST);
 		body.put("errorRecords", errors);
@@ -66,12 +69,12 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 		log.error("handleConstraintViolation---->");
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("result", HttpStatus.BAD_REQUEST);
-		List<String> details = ex.getConstraintViolations().parallelStream().map(e -> e.getMessage())
+		List<String> details = ex.getConstraintViolations().parallelStream().map(ConstraintViolation::getMessage)
 				.collect(Collectors.toList());
 		body.put("errorRecords", details);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<Object>(body, header, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(body, header, HttpStatus.BAD_REQUEST);
 	}
 
 	@Override
@@ -83,7 +86,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 		body.put("errorRecords", ex.getMessage());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<Object>(body, header, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(body, header, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(value = Exception.class)
@@ -94,7 +97,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
 		body.put("errorRecords", ex.getMessage());
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(MediaType.APPLICATION_JSON);
-		return new ResponseEntity<Object>(body, header, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(body, header, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

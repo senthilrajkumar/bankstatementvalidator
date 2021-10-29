@@ -7,8 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.InputStream;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,7 +23,7 @@ import com.nl.rabobank.bankstatementvalidator.exception.TransactionDataInputExce
 import com.nl.rabobank.bankstatementvalidator.service.BankStatementService;
 
 @WebMvcTest(BankStatementController.class)
-class BankStatementControllerTest {
+public class BankStatementControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -35,22 +33,14 @@ class BankStatementControllerTest {
 
 	private InputStream inputStream;
 
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
 	@Test
-	void testAppHealthCheckAPI() throws Exception {
+	protected void testAppHealthCheckAPI() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/statement/v2/app-health-check")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("Application is Up and Running")));
 	}
 
 	@Test
-	void testDBHealthCheckAPIWhenDBDown() throws Exception {
+	protected void testDBHealthCheckAPIWhenDBDown() throws Exception {
 		when(bankStatementService.checkDBIsAvailable()).thenReturn(false);
 		mockMvc.perform(MockMvcRequestBuilders.get("/statement/v2/db-health-check"))
 				.andExpect(status().is5xxServerError())
@@ -58,14 +48,14 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	void testDBHealthCheckAPIWhenDBIsAvailable() throws Exception {
+	protected void testDBHealthCheckAPIWhenDBIsAvailable() throws Exception {
 		when(bankStatementService.checkDBIsAvailable()).thenReturn(true);
 		mockMvc.perform(MockMvcRequestBuilders.get("/statement/v2/db-health-check")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("DB is Up and Running")));
 	}
 
 	@Test
-	public void testCsvFileRecords() throws Exception {
+	protected void testCsvFileRecords() throws Exception {
 		String fileName = "records.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -78,7 +68,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testCsvFileRecordsForDuplicateReference() throws Exception {
+	protected void testCsvFileRecordsForDuplicateReference() throws Exception {
 		String fileName = "records-duplicate.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-duplicate.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -93,7 +83,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testCsvFileRecordsForIncorrectBalance() throws Exception {
+	protected void testCsvFileRecordsForIncorrectBalance() throws Exception {
 		String fileName = "records-incorrectbalance.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-incorrectbalance.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -108,7 +98,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testCsvFileRecordsForIncorrectBalanceAndDuplicate() throws Exception {
+	protected void testCsvFileRecordsForIncorrectBalanceAndDuplicate() throws Exception {
 		String fileName = "records-incorrectbalance-duplicate.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-incorrectbalance-duplicate.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -123,7 +113,7 @@ class BankStatementControllerTest {
 	}
 	
 	@Test
-	void testCsvFilerecordsWhenInternalServerErrorFromService() throws Exception {
+	protected void testCsvFilerecordsWhenInternalServerErrorFromService() throws Exception {
 		String fileName = "records-test.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-test.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -137,7 +127,7 @@ class BankStatementControllerTest {
 
 	// Start Balance is not being passed
 	@Test
-	void testCsvFilerecordsForImproperInput() throws Exception {
+	protected void testCsvFilerecordsForImproperInput() throws Exception {
 		String fileName = "records-input-missing-startbalance.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-input-missing-startbalance.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -152,7 +142,7 @@ class BankStatementControllerTest {
 
 	// Account Number IBAN format is not right
 	@Test
-	void testCsvFilerecordsForImproperAccountNo() throws Exception {
+	protected void testCsvFileRecordsForImproperAccountNo() throws Exception {
 		String fileName = "records-improper-account-number.csv";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-improper-account-number.csv");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/vnd.ms-excel", inputStream);
@@ -166,7 +156,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testXmlFileRecords() throws Exception {
+	protected void testXmlFileRecords() throws Exception {
 		String fileName = "records.xml";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records.xml");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/xml", inputStream);
@@ -179,7 +169,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testXmlFileRecordsForDuplicateReference() throws Exception {
+	protected void testXmlFileRecordsForDuplicateReference() throws Exception {
 		String fileName = "records-duplicate.xml";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-duplicate.xml");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/xml", inputStream);
@@ -194,7 +184,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testXmlFileRecordsForIncorrectBalance() throws Exception {
+	protected void testXmlFileRecordsForIncorrectBalance() throws Exception {
 		String fileName = "records-incorrectbalance.xml";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-incorrectbalance.xml");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/xml", inputStream);
@@ -209,7 +199,7 @@ class BankStatementControllerTest {
 	}
 
 	@Test
-	public void testXmlFileRecordsForIncorrectBalanceAndDuplicate() throws Exception {
+	protected void testXmlFileRecordsForIncorrectBalanceAndDuplicate() throws Exception {
 		String fileName = "records-incorrectbalance-duplicate.xml";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records-incorrectbalance-duplicate.xml");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/xml", inputStream);
@@ -224,7 +214,7 @@ class BankStatementControllerTest {
 	}
 	
 	@Test
-	public void testCsvFileRecordsWhenOtherFilesAreUploaded() throws Exception {
+	protected void testCsvFileRecordsWhenOtherFilesAreUploaded() throws Exception {
 		String fileName = "records.txt";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records.txt");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/text", inputStream);
@@ -238,7 +228,7 @@ class BankStatementControllerTest {
 	}
 	
 	@Test
-	public void testXmlFileRecordsWhenOtherFilesAreUploaded() throws Exception {
+	protected void testXmlFileRecordsWhenOtherFilesAreUploaded() throws Exception {
 		String fileName = "records.txt";
 		inputStream = getClass().getClassLoader().getResourceAsStream("records.txt");
 		MockMultipartFile sampleFile = new MockMultipartFile("file", fileName, "application/text", inputStream);

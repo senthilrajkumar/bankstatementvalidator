@@ -6,8 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,16 +23,8 @@ class BankStatementDaoImplTest {
 	@Autowired
 	private BankStatementDao bankStatementDao;
 
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
-	@AfterEach
-	void tearDown() throws Exception {
-	}
-
 	@Test
-	void testPersistTransactionRecords() throws Exception {
+	void testPersistTransactionRecords() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 25");
 		data.setReferenceNo(25);
@@ -46,7 +36,7 @@ class BankStatementDaoImplTest {
 	}
 	
 	@Test
-	void testCheckTransactionRecordWhenExistsInDB() throws Exception {
+	void testCheckTransactionRecordWhenExistsInDB() {
 		TransactionData data = new TransactionData();
 		data.setAccountNo("NL91 ABNA 0417 1643 26");
 		data.setReferenceNo(26);
@@ -59,7 +49,7 @@ class BankStatementDaoImplTest {
 	}
 	
 	@Test
-	void testCheckTransactionRecordWhenDoesNotExistInDB() throws Exception {
+	void testCheckTransactionRecordWhenDoesNotExistInDB()  {
 		when(repository.findByReferenceNo(27)).thenReturn(null);
 		boolean recordExist = bankStatementDao.checkTransactionRecordExists(27);
 		assertFalse(recordExist);
