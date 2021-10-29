@@ -80,7 +80,6 @@ public class VerificationControllerIntegrationTest {
         mockMvc.perform(multipartRequest.file(sampleFile).contentType("application/vnd.ms-excel"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.result").value("INCORRECT_END_BALANCE"));
-
     }
 
     @Test
@@ -94,7 +93,6 @@ public class VerificationControllerIntegrationTest {
         mockMvc.perform(multipartRequest.file(sampleFile).contentType("application/vnd.ms-excel"))
                 .andExpect(status().isOk()).andExpect(
                         MockMvcResultMatchers.jsonPath("$.result").value("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE"));
-
     }
 
     @Test

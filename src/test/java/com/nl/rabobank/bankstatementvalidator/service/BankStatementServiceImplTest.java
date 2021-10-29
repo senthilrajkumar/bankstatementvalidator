@@ -148,7 +148,6 @@ class BankStatementServiceImplTest {
         assertThrows(BankStatementDBException.class, () -> bankStatementService.processTransactionRecords(transactionData));
     }
 
-    //this test case covers the input json itself contains duplicates and also have duplicates when invoke db and Incorrect balance
     @Test
     void testWhenBothDuplicateAndInCorrectBalanceForMultipleRec() {
         TransactionData data = TransactionData.builder()
